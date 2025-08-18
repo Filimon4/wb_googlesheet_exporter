@@ -1,3 +1,5 @@
+import '#config/env/env.js'
+
 import knex, { migrate, seed } from "#postgres/knex.js";
 
 await migrate.latest();

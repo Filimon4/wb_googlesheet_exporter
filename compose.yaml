@@ -1,5 +1,4 @@
-# provide a name if you wish
-# name: btlz-test
+name: btlz-test
 
 networks:
   postgres-net:
