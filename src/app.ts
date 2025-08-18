@@ -1,8 +1,8 @@
 import '#config/env/env.js'
+import '#crons/index.js'
+import GoogleSheetService from '#modules/googleSheet/googleSheet.service.js'
 
-import knex, { migrate, seed } from "#postgres/knex.js";
+// await migrate.latest();
+// await seed.run();
 
-await migrate.latest();
-await seed.run();
-
-console.log("All migrations and seeds have been run");
+GoogleSheetService.udpateTarrifsTable()

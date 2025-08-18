@@ -22,6 +22,8 @@ export async function up(knex) {
     table.string(Table.getColumnByRaw(BoxTarrifs.allColumns.box_storage_liter).column).notNullable();
     table.string(Table.getColumnByRaw(BoxTarrifs.allColumns.box_storage_coef_expr).column).notNullable();
     table.timestamps(true, true);
+
+    table.unique([Table.getColumnByRaw(BoxTarrifs.allColumns.tariff_date).column, Table.getColumnByRaw(BoxTarrifs.allColumns.warehouse_name).column]);
   });
 }
 

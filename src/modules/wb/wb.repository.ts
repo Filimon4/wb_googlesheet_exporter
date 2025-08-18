@@ -6,9 +6,8 @@ class WbRepository {
 
     static async saveBoxTarrfis(tarrfis: TWbApiResponse<'boxOffer'>) {
         try {
-            
-            const data = tarrfis.data.warehouseList?.map((data) => ({
-                tariff_date: tarrfis.data.dtNextBox,
+            const data = tarrfis.warehouseList?.map((data) => ({
+                tariff_date: knex.fn.now(),
                 warehouse_name: data.warehouseName,
                 geo_name: data.geoName,
                 box_delivery_base: data.boxDeliveryBase,
@@ -25,10 +24,9 @@ class WbRepository {
     
             const saveData = await knex(BoxTarrifsTable.name)
                 .insert(data)
-                .onConflict(['tariff_date', 'warehouse_name', 'geo_name'])
+                .onConflict(['tariff_date', 'warehouse_name'])
                 .merge()
                 .returning('id')
-            console.log("saveData: ", saveData)
 
             return saveData
         } catch (error) {

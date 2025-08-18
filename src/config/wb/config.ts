@@ -6,28 +6,24 @@ export const wbConfigApi = {
         boxOffer: {
             endpoint: 'v1/tariffs/box',
             responseType: z.object({
-                data: z.object({
-                    dtNextBox: z.string(),
-                    dtTillMax: z.string(),
-                    warehouseList: z
-                        .array(
-                        z.object({
-                            boxDeliveryAndStorageExpr: z.string().nullable(),
-                            boxDeliveryBase: z.string(),
-                            boxDeliveryCoefExpr: z.string(),
-                            boxDeliveryLiter: z.string(),
-                            boxDeliveryMarketplaceBase: z.string(),
-                            boxDeliveryMarketplaceCoefExpr: z.string(),
-                            boxDeliveryMarketplaceLiter: z.string(),
-                            boxStorageBase: z.string(),
-                            boxStorageCoefExpr: z.string(),
-                            boxStorageLiter: z.string(),
-                            geoName: z.string(),
-                            warehouseName: z.string(),
-                        })
-                        )
-                        .nullable(),
-                }), 
+                dtNextBox: z.string(),
+                dtTillMax: z.string(),
+                warehouseList: z.array(
+                    z.object({
+                        boxDeliveryAndStorageExpr: z.string().nullable(),
+                        boxDeliveryBase: z.string(),
+                        boxDeliveryCoefExpr: z.string(),
+                        boxDeliveryLiter: z.string(),
+                        boxDeliveryMarketplaceBase: z.string(),
+                        boxDeliveryMarketplaceCoefExpr: z.string(),
+                        boxDeliveryMarketplaceLiter: z.string(),
+                        boxStorageBase: z.string(),
+                        boxStorageCoefExpr: z.string(),
+                        boxStorageLiter: z.string(),
+                        geoName: z.string(),
+                        warehouseName: z.string(),
+                    })
+                ).nullable(),
             }),
         },
     }

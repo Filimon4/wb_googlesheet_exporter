@@ -1,4 +1,5 @@
-import WbApi from "#utils/wbApi.js"
+import GoogleLib from "#utils/googleLib.js"
+import WbApi from "#utils/wbLib.js"
 import WbRepository from "./wb.repository.js"
 
 class WbService {

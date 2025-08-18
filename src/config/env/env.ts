@@ -22,6 +22,15 @@ const envSchema = z.object({
     WB_API_KEY: z.string({
         required_error: "Provide wilberries api key"
     }),
+    GOOGLE_API_KEY: z.string({
+        required_error: "Provide google api key"
+    }),
+    GOOGLE_SHEET_ID: z.string({
+        required_error: "Provide google sheet id"
+    }),
+    GOOGLE_KEY_JSON_PATH: z.string({
+        required_error: "Provide google key json path"
+    }),
 });
 
 const env = envSchema.parse({
@@ -33,6 +42,9 @@ const env = envSchema.parse({
     NODE_ENV: process.env.NODE_ENV,
     APP_PORT: process.env.APP_PORT,
     WB_API_KEY: process.env.WB_API_KEY,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
+    GOOGLE_KEY_JSON_PATH: process.env.GOOGLE_KEY_JSON_PATH,
 });
 
 export default env;
