@@ -18,6 +18,18 @@
 - src/config/env/env.ts
 - src/config/knex/knexfile.ts
 
+## Настройка
+
+Для запросов в wilbderies/api добавте ключ в `.env` файл в WB_API_KEY поле.
+
+Для подключения к google sheets
+1. Создайте проект в google cloud
+2. Включите API для google sheets
+3. Создайте сервисный аккаунт и скачайте ключ
+4. Добавьте ключ в `.env` файл в GOOGLE_KEY_JSON_PATH поле с пут до файла
+5. Добавьте id таблицы в `.env` файл в GOOGLE_SHEET_ID поле
+6. В share файла google sheet добавтье нав аккуант с правами на запись
+
 ## Команды:
 
 Запуск базы данных:
