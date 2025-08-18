@@ -5,12 +5,15 @@ import WbRepository from "./wb.repository.js"
 class WbService {
     
     static async updateBoxTarrifs() {
-
-        const apiData = await WbApi.fetchWb('boxOffer')
-        
-        const savedDBData = WbRepository.saveBoxTarrfis(apiData)
-
-        return savedDBData
+        try {
+            const apiData = await WbApi.fetchWb('boxOffer')
+            
+            const savedDBData = WbRepository.saveBoxTarrfis(apiData)
+    
+            return savedDBData
+        } catch (error) {
+            console.log('Error: ', error)
+        }
     }
 
 }

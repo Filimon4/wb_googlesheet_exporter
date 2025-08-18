@@ -24,19 +24,23 @@ class GoogleSheetService {
     }
 
     static async udpateTarrifsTable() {
-        const checkTable = await this.checkTable(EGoogleSheets.stocksCoefs)
-        if (!checkTable) return false
-
-        const clearTable = await GoogleLib.clearTable(EGoogleSheets.stocksCoefs)
-
-        const tarrifs = await GoogleSheetRepository.getTarrifs()
-        await GoogleLib.appendData(EGoogleSheets.stocksCoefs, [...tarrifs.list.map((data) => Object.values(data))])
-        
-        if (tarrifs.maxPage > 1) {
-            for (let i = 2; i <= tarrifs.maxPage; i++) {
-                const tarrifs = await GoogleSheetRepository.getTarrifs(i)
-                await GoogleLib.appendData(EGoogleSheets.stocksCoefs, [...tarrifs.list.map((data) => Object.values(data))])
+        try {
+            const checkTable = await this.checkTable(EGoogleSheets.stocksCoefs)
+            if (!checkTable) return false
+    
+            await GoogleLib.clearTable(EGoogleSheets.stocksCoefs)
+    
+            const tarrifs = await GoogleSheetRepository.getTarrifs()
+            await GoogleLib.appendData(EGoogleSheets.stocksCoefs, [...tarrifs.list.map((data) => Object.values(data))])
+            
+            if (tarrifs.maxPage > 1) {
+                for (let i = 2; i <= tarrifs.maxPage; i++) {
+                    const tarrifs = await GoogleSheetRepository.getTarrifs(i)
+                    await GoogleLib.appendData(EGoogleSheets.stocksCoefs, [...tarrifs.list.map((data) => Object.values(data))])
+                }
             }
+        } catch (error) {
+            console.log('Error: ', error)
         }
     }
 
