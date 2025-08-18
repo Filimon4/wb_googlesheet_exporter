@@ -7,18 +7,24 @@ import { EGoogleSheets } from '#config/google/config.js'
 class GoogleLib {
     private static cachedAuth: GoogleAuth | null = null
 
-    static makeAuth(): GoogleAuth {
-        if (GoogleLib.cachedAuth) {
-            return GoogleLib.cachedAuth
+    static makeAuth(): GoogleAuth | null {
+        try {
+            if (GoogleLib.cachedAuth) {
+                return GoogleLib.cachedAuth
+            }
+    
+            const newAuth = new google.auth.GoogleAuth({
+                keyFile: env.GOOGLE_KEY_JSON_PATH,
+                scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+            })
+    
+            GoogleLib.cachedAuth = newAuth
+            return newAuth
+        } catch (error) {
+            console.log(error)
+            console.warn("Please check authorization credentials")
+            return null
         }
-
-        const newAuth = new google.auth.GoogleAuth({
-            keyFile: env.GOOGLE_KEY_JSON_PATH,
-            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-        })
-
-        GoogleLib.cachedAuth = newAuth
-        return newAuth
     }
 
     static initSheet(auth: GoogleAuth) {
@@ -28,12 +34,23 @@ class GoogleLib {
         });
     }
 
-    static async writeSheet() {
+    static getSetup() {
         const auth = GoogleLib.makeAuth()
+        if (!auth) throw new Error('Authorization failed')
         const sheet = GoogleLib.initSheet(auth)
         const sheetId = env.GOOGLE_SHEET_ID
 
+        return {
+            auth,
+            sheet,
+            sheetId
+        }
+    }
+
+    static async writeSheet() {
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             const response = await sheet.spreadsheets.values.update({
                 spreadsheetId: sheetId,
                 range: 'A1',
@@ -50,11 +67,9 @@ class GoogleLib {
     }
 
     static async appendData(sheetName: EGoogleSheets, values: any[][], valueInputOption: 'RAW' | 'USER_ENTERED' = 'RAW') {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             return await sheet.spreadsheets.values.append({
                 spreadsheetId: sheetId,
                 range: `${sheetName}!A2`,
@@ -68,13 +83,9 @@ class GoogleLib {
     }
 
     static async createSheet(sheetName: EGoogleSheets) {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
-        if (!sheetName) throw new Error('Sheet name is missing');
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             return await sheet.spreadsheets.batchUpdate({
                 spreadsheetId: sheetId,
                 requestBody: {
@@ -96,11 +107,9 @@ class GoogleLib {
     }
 
     static async createTable(sheetName: EGoogleSheets, headers: string[]) {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             const range = `${sheetName}!A1:${String.fromCharCode(65 + headers.length - 1)}1`;
             return await sheet.spreadsheets.values.update({
                 spreadsheetId: sheetId,
@@ -115,11 +124,9 @@ class GoogleLib {
     }
 
     static async isSheetExist(sheetName: EGoogleSheets): Promise<boolean> {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             const response = await sheet.spreadsheets.get({ spreadsheetId: sheetId });
             const sheetExist = response.data.sheets?.find((s) => s.properties?.title === sheetName)?.properties;
             return !!sheetExist;
@@ -129,11 +136,9 @@ class GoogleLib {
     }
 
     static async getSheetData(sheetName: EGoogleSheets) {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             const response = await sheet.spreadsheets.get({ spreadsheetId: sheetId });
             return response.data.sheets?.find((s) => s.properties?.title === sheetName)?.properties;
         } catch (error) {
@@ -142,11 +147,9 @@ class GoogleLib {
     }
 
     static async tableHeadersExist(sheetName: EGoogleSheets, expectedHeaders: string[]): Promise<boolean> {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             const range = `${sheetName}!A1:${String.fromCharCode(65 + expectedHeaders.length - 1)}1`;
             const response = await sheet.spreadsheets.values.get({
                 spreadsheetId: sheetId,
@@ -160,11 +163,9 @@ class GoogleLib {
     }
 
     static async clearTable(sheetName: EGoogleSheets) {
-        const auth = GoogleLib.makeAuth()
-        const sheet = GoogleLib.initSheet(auth)
-        const sheetId = env.GOOGLE_SHEET_ID
-
         try {
+            const {auth, sheet, sheetId} = GoogleLib.getSetup()
+
             const sheetData = await this.getSheetData(sheetName)
             const rowCount = sheetData?.gridProperties?.rowCount || 1000;
     

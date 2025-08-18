@@ -7,8 +7,9 @@ class WbService {
     static async updateBoxTarrifs() {
         try {
             const apiData = await WbApi.fetchWb('boxOffer')
+            if (!apiData) return null
             
-            const savedDBData = WbRepository.saveBoxTarrfis(apiData)
+            const savedDBData = await WbRepository.saveBoxTarrfis(apiData)
     
             return savedDBData
         } catch (error) {
