@@ -29,11 +29,19 @@
 1. Создайте проект в google cloud
 2. Включите API для google sheets
 3. Создайте сервисный аккаунт и скачайте ключ
-4. Добавьте ключ в `.env` файл в GOOGLE_KEY_JSON_PATH поле с пут до файла
+4. Добавьте скаченный ключ в папку с проектом и переименуйте на ./google_key.json. В .env файле в GOOGLE_KEY_JSON_PATH укажите путь к файлу ./google_key.json (хард код решение для тестового проекта)
 5. Добавьте id таблицы в `.env` файл в GOOGLE_SHEET_ID поле
 6. В share файла google sheet добавтье нав аккуант с правами на запись
 
 ## Заупукс проекта
+
+Заполните .env файл по примеру example.env и по интсрукции в часте "Настройка"
+
+Скачайте зависимости
+
+```bash
+npm install
+```
 
 Запустите бд
 
@@ -58,6 +66,17 @@ npm run knex migrate latest
 ```bash
 docker compose up -d --build app
 ```
+
+## Итоговый резаультат
+
+В Docker запущены два контейнера. Один с бд другой с приложением
+![alt text](image.png)
+
+Таблица в бд заполнена данными
+![alt text](image-1.png)
+
+В google sheets данные из бд
+![alt text](image-2.png)
 
 ## Команды:
 
